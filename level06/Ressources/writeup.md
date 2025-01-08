@@ -54,8 +54,8 @@ int main(int ac, char **av, char **envp)
 }
 ```
 
-Here the goal is simple it's to pass the `auth()` function to do that we need to now what is the serial number,
-that will be created by using our username that we provide so here is a simple python that will give us the serial based on our username,
+Here the goal is simple it's to pass the `auth()` function to do that, we need to know what is the serial number,
+it will be created by using our username we provide so here is a simple python that will give us the serial based on our username,
 it's pretty much a copy of the else block in the `auth()` function.
 
 ```python
