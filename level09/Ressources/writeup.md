@@ -119,12 +119,12 @@ void    set_msg(char *buffer)
 ```
 
 You could see here we also have a stack buffer called `s` we also fetch the input from the user via `fgets()` call,
-but the `strncpy()` parameter are what we are interested in for the exploit.
+but the `strncpy()` parameter is what we are interested in for the exploit.
 
 Here is function call with parameter `strncpy(buffer, s, *(int *)(buffer + 180))` the third parameter is the reason of the exploit,
-so the exploit is the simple overwrite of the return address where here we will need to write the return address by the function `secret_backdoor()`.
+so the exploit is a simple overwrite of the return address by the address of function `secret_backdoor()`.
 
-The issue the with the third parameter in `strncpy()` is that we can control that parameter allowing us to overflow the `buffer` which max capacity is 140 byte,
+The issue with the third parameter in `strncpy()` is that we can control that parameter allowing us to overflow the `buffer` which max capacity is 140 byte,
 so the goal here will be to pass byte `\xff` which is equal in decimal as 255 allowing us to overwrite the return address.
 
 First let's test that theory and find the offset that will overwrite the value let's start `gdb-gef` and find those information:
